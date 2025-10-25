@@ -1,0 +1,18 @@
+Failed logons
+event.category: authentication AND event.outcome: failure
+
+Admin changes
+event.code: (4732 or 4733) AND winlog.event_data.TargetSid: "S-1-5-32-544"
+
+PowerShell executions
+event.code: 4688 AND process.name.caseless: ("powershell.exe" OR "pwsh.exe")
+
+Suspicious PowerShell flags
+
+event.code: 4688
+AND (process.name.caseless: ("powershell.exe" OR "pwsh.exe")
+     OR process.executable.caseless: ("*\\powershell.exe" OR "*\\pwsh.exe"))
+AND (
+  process.command_line: (*EncodedCommand* OR *-enc* OR *-ExecutionPolicy* OR *Bypass*)
+  OR winlog.event_data.CommandLine: (*EncodedCommand* OR *-enc* OR *-ExecutionPolicy* OR *Bypass*)
+)
